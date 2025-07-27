@@ -161,3 +161,4 @@ fabric.properties
 /data/receipts/
 /.env.production
 /.env
+/data/invoices/
