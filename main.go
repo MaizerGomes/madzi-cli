@@ -23,7 +23,8 @@ func main() {
 		fmt.Println("2) Register new client")
 		fmt.Println("3) Update client details")
 		fmt.Println("4) Process invoices and send receipts for all clients")
-		fmt.Println("5) Exit")
+		fmt.Println("5) Setup email configuration")
+		fmt.Println("6) Exit")
 		fmt.Print("Choose an option: ")
 
 		choice := readLine()
@@ -59,6 +60,8 @@ func main() {
 		case "4":
 			ProcessInvoicesAndSendReceipts()
 		case "5":
+			createEnvFile()
+		case "6":
 			fmt.Println("👋 Goodbye.")
 			os.Exit(0)
 		default:
@@ -70,7 +73,7 @@ func main() {
 func loadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("⚠️  .env file not found or failed to load")
+		createEnvFile()
 	}
 }
 
@@ -247,7 +250,7 @@ func viewReceipts(client Client) {
 	}
 
 	for i, r := range receipts {
-		fmt.Printf("\n📄 Receipt: %s (#%s)\n", r.Number, i+1)
+		fmt.Printf("\n📄 Receipt: %s (# %d)\n", r.Number, i+1)
 		fmt.Printf("   ➤ Date: %s\n", r.Date)
 		fmt.Printf("   ➤ Address: %s\n", strings.TrimSpace(r.Address))
 	}
@@ -370,4 +373,75 @@ func ProcessInvoicesAndSendReceipts() {
 	}
 
 	fmt.Println("\n🎉 Processamento concluído.")
+}
+
+var requiredEnvVars = []string{
+	"SMTP_HOST",
+	"SMTP_PORT",
+	"SMTP_USERNAME",
+	"SMTP_PASSWORD",
+	"EMAIL_SENDER_NAME",
+	"EMAIL_SENDER_NAME",
+	"EMAIL_SENDER_ADDRESS",
+}
+
+var defaultEnvVars = map[string]string{
+	"SMTP_HOST":            "smtp.elasticemail.com",
+	"SMTP_PORT":            "2525",
+	"SMTP_USERNAME":        "adem@ekutiva.co.mz",
+	"SMTP_PASSWORD":        "21A44FB0E64A72FF7B40B50421DD115B9BB1",
+	"EMAIL_SENDER_NAME":    "'Madzi CLI'",
+	"EMAIL_SENDER_ADDRESS": "adem@ekutiva.co.mz",
+}
+
+// createEnvFile prompts user and writes .env file
+func createEnvFile() {
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("❌ Failed to create .env file: %v", err)
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			log.Fatalf("❌ Failed to close .env file: %v", err)
+		}
+	}(file)
+
+	writer := bufio.NewWriter(file)
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Printf("Email configuration for Madzi CLI\n")
+	choice := prompt("Use default values? (y/n):")
+
+	if choice == "y" || choice == "" {
+		fmt.Println("Using default email configuration values.")
+	} else {
+
+		fmt.Println("Please enter the following environment variables:")
+	}
+
+	for key, def := range defaultEnvVars {
+		input := ""
+		if choice == "n" {
+			fmt.Printf("%s: ", key)
+			input, _ := reader.ReadString('\n')
+			input = strings.TrimSpace(input)
+		} else {
+			input = def
+		}
+
+		line := fmt.Sprintf("%s=%s\n", key, input)
+		_, err := writer.WriteString(line)
+		if err != nil {
+			return
+		}
+	}
+
+	err = writer.Flush()
+	if err != nil {
+		return
+	}
+	fmt.Println(".env file created successfully.")
+
+	loadEnv()
 }
