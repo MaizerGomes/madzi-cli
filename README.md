@@ -1,4 +1,5 @@
-# 💧 madzi-cli
+# 💧 madzi-cli ![GitHub](https://img.shields.io/github/license/MaizerGomes/madzi-cli) ![GitHub stars](https://img.shields.io/github/stars/MaizerGomes/madzi-cli?style=social)
+
 
 **A simple, interactive CLI to manage your postpaid water invoices with ADRM (Mozambique).**
 
@@ -21,20 +22,22 @@
 ## 🚀 Quick Start
 
 ### ✅ Prerequisites
-
-- macOS (Apple Silicon or Intel)
+#### MacOS or Linux system with the following prerequisites:
 - Homebrew (package manager): [Install Homebrew](https://brew.sh)
+
+#### Windows:
+- Download from Releases section or build from source using Go.
 
 ### 🛠️ Installation via Homebrew
 
 ```sh
 brew tap MaizerGomes/homebrew-madzi-cli
 brew install madzi-cli
-
+```
 🖥️ Running the CLI
-
+```sh
 madzi-cli
-
+```
 On first run, you’ll be prompted to configure required environment variables (email). These will be saved to a .env file in the current directory.
 
 
@@ -45,16 +48,22 @@ Coming soon: Visual walkthrough of CLI features and usage.
 ⸻
 
 🧪 Development
-	1.	Clone the repo:
-
+1.	Clone the repo:
+```sh
 git clone https://github.com/MaizerGomes/madzi-cli.git
 cd madzi-cli
+```
 
-	2.	Build the CLI:
+2. Run the CLI:
+```sh
+go run .
+```
 
+3. Build the CLI:
+```sh
 go build -o madzi-cli
 ./madzi-cli
-
+```
 
 ⸻
 
@@ -77,7 +86,9 @@ go build -o madzi-cli
 
 👤 Author
 
-Maizer Gomes
+Maizer Gomes ![GitHub](https://img.shields.io/github/followers/MaizerGomes?style=social)
+
+
 github.com/MaizerGomes
 
 ⸻
